@@ -113,6 +113,7 @@ const DnDFlow = () => {
           selectionMode={SelectionMode.Partial}
           onDrop={onDrop}
           onDragOver={onDragOver}
+          deleteKeyCode="Delete"
         >
           <Background />
           <Controls />
