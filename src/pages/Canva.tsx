@@ -15,12 +15,12 @@ import {
 import '@xyflow/react/dist/style.css';
 import { DevTools } from "@/components/devtools";
 
-import Sidebar from './Sidebar';
+import Sidebar from './Canva/Sidebar';
 import { DnDProvider, useDnD } from './DnDContext';
 
-import Discord from "./CustomNodes/Discord";
-import Git from "./CustomNodes/Git";
-import Microsoft from "./CustomNodes/Microsoft";
+import Discord from "./Canva/CustomNodes/Discord";
+import Git from "./Canva/CustomNodes/Git";
+import Microsoft from "./Canva/CustomNodes/Microsoft";
 
 // const initialNodes = [
 //   { id: '1', data: { label: 'Hello' }, sourcePosition: 'right', targetPosition: 'null', position: { x: -169, y: 0 }, type: "input" },
