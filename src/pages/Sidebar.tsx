@@ -59,7 +59,15 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside className="w-80 max-w-xl border-r border-white px-6 py-8 text-l bg-gray-200 text-black">
-      <div className="mb-6">You can drag these nodes to the pane on the right.</div>
+      <div className="relative flex items-center justify-center text-6xl font-medium mb-6">
+        <img
+          src="/favicon-32x32.png"
+          alt="AREA"
+          className="h-6 w-6 mr-2"
+        />
+        TriggerMeNot
+      </div>
+      <hr className="h-px mb-6 bg-gray-200 border-0 dark:bg-gray-700"/>
       {panels.map((panel) => (
         <SidebarPanel
           key={panel.id}
