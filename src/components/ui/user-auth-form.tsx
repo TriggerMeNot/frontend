@@ -10,56 +10,22 @@ import { Icons } from "./icons"
 import { Button } from "./button"
 import { Input } from "./input"
 
-const LoginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(1, { message: "Password is required." }),
-})
-
-const RegisterSchema = LoginSchema.extend({
-  confirmPassword: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters." })
-    .refine((data) => /[A-Z]/.test(data), {
-      message: "Password must contain at least one uppercase letter.",
-    })
-    .refine((data) => /[a-z]/.test(data), {
-      message: "Password must contain at least one lowercase letter.",
-    })
-    .refine((data) => /[0-9]/.test(data), {
-      message: "Password must contain at least one number.",
-    }),
-}).refine(
-  (data) => data.confirmPassword === data.password,
-  {
-    message: "Passwords must match.",
-    path: ["confirmPassword"],
-  }
-);
-
-interface UserAuthFormState {
-  isLoading: boolean
-  onSuccess: (success: boolean) => void
-  onFail: (error: string) => void
-}
+import { LoginSchema, RegisterSchema, useAuth } from "@/contexts/AuthProvider"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   mode: "login" | "register"
-  formState: UserAuthFormState
 }
 
-function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps) {
+function UserLoginAuthForm({ className, ...props }: UserAuthFormProps) {
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: { email: "", password: "" },
   })
 
+  const { loginWithUsernameAndPassword, isLoading } = useAuth();
+
   async function onSubmit(data: z.infer<typeof LoginSchema>) {
-    console.log(data)
-    try {
-      formState.onSuccess(true)
-    } catch (error: any) {
-      formState.onFail(error.message || "Login failed.")
-    }
+    loginWithUsernameAndPassword(data);
   }
 
   return (
@@ -73,7 +39,7 @@ function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps
             autoCapitalize="none"
             autoComplete="email"
             autoCorrect="off"
-            disabled={formState.isLoading}
+            disabled={isLoading}
             {...form.register("email")}
           />
           <p className="text-red-600">{form.formState.errors.email?.message}</p>
@@ -84,13 +50,13 @@ function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps
             placeholder="Password"
             type="password"
             autoComplete="current-password"
-            disabled={formState.isLoading}
+            disabled={isLoading}
             {...form.register("password")}
           />
           <p className="text-red-600">{form.formState.errors.password?.message}</p>
         </div>
-        <Button disabled={formState.isLoading} className="w-full">
-          {formState.isLoading && (
+        <Button disabled={isLoading} className="w-full">
+          {isLoading && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
           Sign In with Email
@@ -100,19 +66,16 @@ function UserLoginAuthForm({ formState, className, ...props }: UserAuthFormProps
   )
 }
 
-function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormProps) {
+function UserRegisterAuthForm({ className, ...props }: UserAuthFormProps) {
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: { email: "", password: "", confirmPassword: "" },
   })
 
+  const { registerWithUsernameAndPassword, isLoading } = useAuth();
+
   async function onSubmit(data: z.infer<typeof RegisterSchema>) {
-    console.log(data)
-    try {
-      formState.onSuccess(true)
-    } catch (error: any) {
-      formState.onFail(error.message || "Registration failed.")
-    }
+    registerWithUsernameAndPassword(data);
   }
 
   return (
@@ -126,10 +89,20 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
             autoCapitalize="none"
             autoComplete="email"
             autoCorrect="off"
-            disabled={formState.isLoading}
+            disabled={isLoading}
             {...form.register("email")}
           />
           <p className="text-red-600">{form.formState.errors.email?.message}</p>
+        </div>
+        <div className="grid gap-1">
+          <Input
+            id="username"
+            placeholder="Username"
+            type="text"
+            autoComplete="username"
+            disabled={isLoading}
+            {...form.register("username")}
+          />
         </div>
         <div className="grid gap-1">
           <Input
@@ -137,7 +110,7 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
             placeholder="Password"
             type="password"
             autoComplete="new-password"
-            disabled={formState.isLoading}
+            disabled={isLoading}
             {...form.register("password")}
           />
           <p className="text-red-600">{form.formState.errors.password?.message}</p>
@@ -148,13 +121,13 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
             placeholder="Confirm Password"
             type="password"
             autoComplete="new-password"
-            disabled={formState.isLoading}
+            disabled={isLoading}
             {...form.register("confirmPassword")}
           />
           <p className="text-red-600">{form.formState.errors.confirmPassword?.message?.toString()}</p>
         </div>
-        <Button disabled={formState.isLoading} className="w-full">
-          {formState.isLoading && (
+        <Button disabled={isLoading} className="w-full">
+          {isLoading && (
             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
           )}
           Register with Email
@@ -164,14 +137,28 @@ function UserRegisterAuthForm({ formState, className, ...props }: UserAuthFormPr
   )
 }
 
-export function UserAuthForm({ mode, formState, className, ...props }: UserAuthFormProps) {
+export function UserAuthForm({ mode, className, ...props }: UserAuthFormProps) {
+  const { isLoading, loginWithGithub } = useAuth();
+
   return (
     <>
       {mode === "login" ? (
-        <UserLoginAuthForm mode={"login"} formState={formState} className={className} {...props} />
+        <UserLoginAuthForm mode={"login"} className={className} {...props} />
       ) : (
-        <UserRegisterAuthForm mode={"register"} formState={formState} className={className} {...props} />
+        <UserRegisterAuthForm mode={"register"} className={className} {...props} />
       )}
+      <Button
+        disabled={isLoading}
+        className="w-full"
+        onClick={loginWithGithub}
+      >
+        {isLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.gitHub className="mr-2 h-4 w-4" />
+        )}
+        Sign In with GitHub
+      </Button>
     </>
   )
 }
