@@ -24,12 +24,6 @@ import Microsoft from "./Canva/CustomNodes/Microsoft";
 
 import { ThemeProvider, useTheme } from '../contexts/theme-provider'
 
-// const initialNodes = [
-//   { id: '1', data: { label: 'Hello' }, sourcePosition: 'right', targetPosition: 'null', position: { x: -169, y: 0 }, type: "input" },
-//   { id: '3', data: { label: 'Discord' }, position: { x: -169, y: 127 }, type: "discord" },
-//   { id: '2', data: { label: 'World' }, sourcePosition: 'right', targetPosition: 'left', position: { x: 100, y: 100 } },
-// ];
-
 const nodeColor = (node: any) => {
   switch (node.type) {
     case 'input':
