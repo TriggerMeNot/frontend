@@ -35,8 +35,8 @@ const Sidebar: React.FC = () => {
       id: 'git',
       logoSrc: '/git_logo.png',
       logoAlt: 'Git Logo',
-      logoWidth: 56,
-      logoHeight: 24,
+      logoWidth: 40,
+      logoHeight: 40,
       buttons: [
         { label: 'Button 1', onDragStart: onDragStart('git') },
         { label: 'Button 2', onDragStart: onDragStart('git') },
@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="w-80 max-w-xl border-r border-white px-6 py-8 text-l bg-gray-200 text-black">
+    <aside className="w-80 max-w-xl px-6 py-8 text-l bg-gray-200 text-black">
       <div className="relative flex items-center justify-center text-2xl font-medium mb-6">
         <img
           src="/favicon-32x32.png"

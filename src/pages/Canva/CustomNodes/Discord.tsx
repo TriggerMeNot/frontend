@@ -1,4 +1,5 @@
 import React, { memo, useState } from 'react';
+import { useTheme } from '../../../contexts/theme-provider'
 import { Handle, Position } from '@xyflow/react';
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ interface DiscordNodeProps {
 const Discord: React.FC<DiscordNodeProps> = memo(({ data, isConnectable }) => {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { theme } = useTheme();
 
   const handleDeleteClick = () => {
     setIsConfirmingDelete(true);
@@ -43,12 +45,19 @@ const Discord: React.FC<DiscordNodeProps> = memo(({ data, isConnectable }) => {
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger>
-          <div className="w-20 h-20 z-10 relative flex items-center justify-center px-4 py-2 border-2 border-black rounded-sm cursor-grab bg-white text-xs">
+          <div className="w-20 h-20 z-10 relative flex items-center justify-center px-4 py-2 border-dashed border-2 border-gray-900 dark:border-white rounded-xl cursor-grab bg-neutral-50 dark:bg-gray-900 text-xs">
             <Handle
               type="target"
               position={Position.Left}
               onConnect={(params) => console.log('Handle onConnect:', params)}
               isConnectable={isConnectable}
+              style={{
+                width: '10px',
+                height: '20px',
+                backgroundColor: theme === 'dark' ? 'white' : '#111827',
+                border: 'none',
+                borderRadius: '0',
+              }}
             />
             <div className="text-2xl font-medium">
               <img
@@ -62,12 +71,12 @@ const Discord: React.FC<DiscordNodeProps> = memo(({ data, isConnectable }) => {
               position={Position.Right}
               id="a"
               isConnectable={isConnectable}
-            />
-            <Handle
-              type="source"
-              position={Position.Right}
-              id="b"
-              isConnectable={isConnectable}
+              style={{
+                width: '15px',
+                height: '15px',
+                backgroundColor: theme === 'dark' ? 'white' : '#111827',
+                border: 'none',
+              }}
             />
           </div>
         </DialogTrigger>
