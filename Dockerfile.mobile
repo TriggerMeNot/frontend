@@ -97,6 +97,3 @@ RUN keytool -genkey -v \
     -keypass password \
     -dname "CN=Equipe, OU=Equipe, O=Epitech, L=Rennes, S=Britany, C=33"
 RUN npx cap build android --androidreleasetype APK --keystorepath /workdir/android/keystore --keystorealias area --keystorepass password --keystorealiaspass password --signing-type apksigner
-
-# Copy the built APK to /static
-CMD cp /workdir/android/app/build/outputs/apk/release/app-release-signed.apk /static/client.apk
