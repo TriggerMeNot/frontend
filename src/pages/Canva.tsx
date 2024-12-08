@@ -72,6 +72,13 @@ const DnDFlow = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  const handleDeleteNode = useCallback(
+    (id: string) => {
+      setNodes((nds) => nds.filter((node) => node.id !== id));
+    },
+    [setNodes]
+  );
+
   const onDrop = useCallback(
     (event: any) => {
       event.preventDefault();
@@ -84,16 +91,22 @@ const DnDFlow = () => {
         x: event.clientX,
         y: event.clientY,
       });
+
+      const id = getId();
+
       const newNode = {
-        id: getId(),
+        id,
         type,
         position,
-        data: { label: `${type} node` },
+        data: {
+          label: `${type} node`,
+          onDelete: () => handleDeleteNode(id),
+        },
       };
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [screenToFlowPosition, type],
+    [screenToFlowPosition, type, handleDeleteNode]
   );
 
   return (
