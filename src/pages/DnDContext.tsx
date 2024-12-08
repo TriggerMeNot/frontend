@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
 
-// Define the type of the context value
 type DnDContextType = [string | null, Dispatch<SetStateAction<string | null>>];
 
-// Create the context with a default value of null
 const DnDContext = createContext<DnDContextType | undefined>(undefined);
 
 interface DnDProviderProps {

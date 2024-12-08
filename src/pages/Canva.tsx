@@ -22,6 +22,8 @@ import Discord from "./Canva/CustomNodes/Discord";
 import Git from "./Canva/CustomNodes/Git";
 import Microsoft from "./Canva/CustomNodes/Microsoft";
 
+import { ThemeProvider, useTheme } from '../contexts/theme-provider'
+
 // const initialNodes = [
 //   { id: '1', data: { label: 'Hello' }, sourcePosition: 'right', targetPosition: 'null', position: { x: -169, y: 0 }, type: "input" },
 //   { id: '3', data: { label: 'Discord' }, position: { x: -169, y: 127 }, type: "discord" },
@@ -60,11 +62,21 @@ const DnDFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { screenToFlowPosition } = useReactFlow();
+  const { theme } = useTheme();
   const [type] = useDnD();
 
   const onConnect = useCallback(
-    (params: any) => setEdges((eds: any) => addEdge(params, eds)),
-    [],
+    (params: any) => {
+      const newEdge = {
+        ...params,
+        style: {
+          strokeWidth: 2,
+          stroke: theme === 'dark' ? 'white' : '#111827',
+        },
+      };
+      setEdges((eds) => addEdge(newEdge, eds));
+    },
+    []
   );
 
   const onDragOver = useCallback((event: any) => {
@@ -110,31 +122,34 @@ const DnDFlow = () => {
   );
 
   return (
-    <div className="flex-row flex grow h-full">
-      <Sidebar />
-      <div className="relative h-screen w-full p-10 text-black lg:flex bg-zinc-900">
-        <ReactFlow
-          nodes={nodes}
-          onNodesChange={onNodesChange}
-          nodeTypes={nodeTypes}
-          edges={edges}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          fitView
-          selectionOnDrag
-          panOnDrag={panOnDrag}
-          selectionMode={SelectionMode.Partial}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          deleteKeyCode="Delete"
-        >
-          <Background />
-          <Controls />
-          <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
-          <DevTools />
-        </ReactFlow>
+    <ThemeProvider>
+      <div className="flex-row flex grow h-full">
+        <Sidebar />
+        <div className="relative h-screen w-full p-10 text-black lg:flex bg-neutral-100 dark:bg-zinc-900">
+          <ReactFlow
+            nodes={nodes}
+            onNodesChange={onNodesChange}
+            nodeTypes={nodeTypes}
+            edges={edges}
+            onEdgesChange={onEdgesChange}
+            edgeStyle={{ strokeWidth: 3 }}
+            onConnect={onConnect}
+            fitView
+            selectionOnDrag
+            panOnDrag={panOnDrag}
+            selectionMode={SelectionMode.Partial}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            deleteKeyCode="Delete"
+          >
+            <Background />
+            <Controls />
+            <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable />
+            <DevTools />
+          </ReactFlow>
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 
