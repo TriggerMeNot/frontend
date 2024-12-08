@@ -47,8 +47,8 @@ const Sidebar: React.FC = () => {
       id: 'microsoft',
       logoSrc: '/microsoft_logo.png',
       logoAlt: 'Microsoft Logo',
-      logoWidth: 72,
-      logoHeight: 56,
+      logoWidth: 28,
+      logoHeight: 28,
       buttons: [
         { label: 'Button 1', onDragStart: onDragStart('microsoft') },
         { label: 'Button 2', onDragStart: onDragStart('microsoft') },

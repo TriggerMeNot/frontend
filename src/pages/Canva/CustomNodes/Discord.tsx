@@ -1,43 +1,104 @@
-import React, { memo, ChangeEvent } from 'react';
+import React, { memo, useState } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
-interface ColorPickerNodeProps {
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+interface DiscordNodeProps {
   data: {
-    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onDelete: () => void;
   };
   isConnectable: boolean;
 }
 
-const Discord: React.FC<ColorPickerNodeProps> = memo(({ isConnectable }) => {
+const Discord: React.FC<DiscordNodeProps> = memo(({ data, isConnectable }) => {
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDeleteClick = () => {
+    setIsConfirmingDelete(true);
+  };
+
+  const handleDelete = () => {
+    if (data.onDelete) {
+      data.onDelete();
+    }
+    setIsConfirmingDelete(false);
+    setIsOpen(false);
+  };
+
+  const handleCancelDelete = () => {
+    setIsConfirmingDelete(false);
+  };
+
   return (
     <>
-    <div className="px-4 py-2 border-2 border-black rounded-sm cursor-grab bg-white text-xs">
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger>
+          <div className="w-20 h-20 z-10 relative flex items-center justify-center px-4 py-2 border-2 border-black rounded-sm cursor-grab bg-white text-xs">
+            <Handle
+              type="target"
+              position={Position.Left}
+              onConnect={(params) => console.log('Handle onConnect:', params)}
+              isConnectable={isConnectable}
+            />
+            <div className="text-2xl font-medium">
+              <img
+                src="/discord_logo.png"
+                alt="Discord Logo"
+                className="h-6 w-8"
+              />
+            </div>
+            <Handle
+              type="source"
+              position={Position.Right}
+              id="a"
+              isConnectable={isConnectable}
+            />
+            <Handle
+              type="source"
+              position={Position.Right}
+              id="b"
+              isConnectable={isConnectable}
+            />
+          </div>
+        </DialogTrigger>
 
-        <Handle
-            type="target"
-            position={Position.Left}
-            onConnect={(params) => console.log('Handle onConnect:', params)}
-            isConnectable={isConnectable}
-        />
-        <div>
-            Discord
-        </div>
-        <label>
-            Your Discord handle: <input className="border border-slate-600 rounded-sm" name="myInput" />
-        </label>
-        <Handle
-            type="source"
-            position={Position.Right}
-            id="a"
-            isConnectable={isConnectable}
-        />
-        <Handle
-            type="source"
-            position={Position.Right}
-            id="b"
-            isConnectable={isConnectable}
-        />
-    </div>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{isConfirmingDelete ? 'Confirm Deletion' : 'This is a Discord modal!'}</DialogTitle>
+            <DialogDescription>
+              {isConfirmingDelete
+                ? 'Are you sure you want to delete this node? This action cannot be undone.'
+                : 'Manage your Discord Node settings here.'}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            {isConfirmingDelete ? (
+              <>
+                <Button onClick={handleCancelDelete} variant="outline">
+                  Cancel
+                </Button>
+                <Button onClick={handleDelete} type="button" variant="destructive">
+                  Confirm Delete
+                </Button>
+              </>
+            ) : (
+              <Button onClick={handleDeleteClick} type="button" variant="destructive">
+                Delete Node
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 });
