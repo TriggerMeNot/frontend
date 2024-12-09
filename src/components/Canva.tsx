@@ -102,6 +102,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         playgroundId: playground.id,
         data: {
           ...actionIdToData[action.id as keyof typeof actionIdToData],
+          settings: action.settings,
           onDelete: () => handleDeleteNode(`action-${action.id}`),
         },
       });
@@ -115,6 +116,7 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
         playgroundId: playground.id,
         data: {
           ...reactionIdToData[reaction.id as keyof typeof reactionIdToData],
+          settings: reaction.settings,
           onDelete: () => handleDeleteNode(`reaction-${reaction.id}`),
         },
       });
@@ -243,14 +245,14 @@ const DnDFlow = ({ playground, setPlayground }: { playground: any, setPlayground
       setNodes((nds) => nds.concat(newNode));
 
       if (data.payload.actionType === 'action') {
-        addActionToPlayground(backendAddress, token as string, playground.id, data.payload.id, {}).then((res) => {
+        addActionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }).then((res) => {
           setPlayground((pg: any) => ({
             ...pg,
             actions: [...pg.actions, res],
           }));
         });
       } else {
-        addReactionToPlayground(backendAddress, token as string, playground.id, data.payload.id, {}).then((res) => {
+        addReactionToPlayground(backendAddress, token as string, playground.id, data.payload.id, { settings: {} }).then((res) => {
           setPlayground((pg: any) => ({
             ...pg,
             reactions: [...pg.reactions, res],
