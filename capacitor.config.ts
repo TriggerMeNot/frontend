@@ -7,28 +7,20 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: 'http',
     iosScheme: 'http',
-    hostname: 'localhost:8081',
+    hostname: '192.168.1.14:8081',
     cleartext: true,
     allowNavigation: [
-      "*"
+      'http://*/*',
     ]
   },
   plugins: {
     App: {
-      domain: 'localhost:8081',
+      domain: '192.168.1.14:8081',
       paths: [
         '/login/',
-        '/login/google/',
-        '/login/github/',
-        '/login/microsoft/',
-        '/login/discord/',
         '/terms/',
         '/reset-password/',
         '/services/',
-        '/services/google/',
-        '/services/github/',
-        '/services/microsoft/',
-        '/services/discord/',
         '/settings/',
         '/playground/',
         '/playground/:id/'
